@@ -215,10 +215,11 @@ final class AudioTransceiver: ObservableObject {
     private func activateSession() throws {
         let session = AVAudioSession.sharedInstance()
         // .measurement disables voice processing / AGC that would otherwise distort the tones;
-        // .defaultToSpeaker sends output to the loudspeaker instead of the earpiece.
+        // .defaultToSpeaker is ignored in .measurement mode, so the loudspeaker is forced explicitly below.
         try session.setCategory(.playAndRecord, mode: .measurement, options: [.defaultToSpeaker])
         try? session.setPreferredSampleRate(48_000)
         try session.setActive(true)
+        try session.overrideOutputAudioPort(.speaker)
     }
 
     private func observeConfigurationChanges(of engine: AVAudioEngine) {

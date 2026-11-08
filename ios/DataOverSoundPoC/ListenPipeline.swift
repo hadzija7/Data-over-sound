@@ -43,14 +43,14 @@ final class ListenPipeline: @unchecked Sendable {
             return
         }
         queuedChunks += 1
+        let mustReset = droppedAudio
+        droppedAudio = false
         lock.unlock()
 
         queue.async { [self] in
             lock.lock()
             queuedChunks -= 1
             let isCancelled = cancelled
-            let mustReset = droppedAudio
-            droppedAudio = false
             lock.unlock()
             guard !isCancelled else { return }
 

@@ -1,0 +1,43 @@
+name: iOS proof of concept
+
+on:
+  pull_request:
+    paths:
+      - 'ios/**'
+      - '.github/workflows/ios-poc.yml'
+  push:
+    branches: [master]
+    paths:
+      - 'ios/**'
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Toolchain versions
+        run: xcodebuild -version && swift --version
+
+      - name: Core unit tests (Accelerate vDSP backend)
+        working-directory: ios/Core
+        run: swift test
+
+      - name: Build app for iOS Simulator (unsigned)
+        working-directory: ios
+        run: >
+          xcodebuild build
+          -project DataOverSoundPoC.xcodeproj
+          -scheme DataOverSoundPoC
+          -destination 'generic/platform=iOS Simulator'
+          CODE_SIGNING_ALLOWED=NO
+
+      - name: Build app for iOS device (unsigned, not installable)
+        working-directory: ios
+        run: >
+          xcodebuild build
+          -project DataOverSoundPoC.xcodeproj
+          -scheme DataOverSoundPoC
+          -destination 'generic/platform=iOS'
+          CODE_SIGNING_ALLOWED=NO

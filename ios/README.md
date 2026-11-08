@@ -176,8 +176,8 @@ Late callbacks from a stopped operation are ignored using an operation ID.
 | `swift test` in `ios/Core` on Linux (Swift 6.0.3, portable Goertzel backend): 30 tests covering CRC, framing, UTF-8 truncation and validation, tone classification, synthesis, and synthetic end-to-end decoding with noise, echo, attenuation, random chunking, corruption, timeout, and reset | **Passed** |
 | Core builds without warnings under `-strict-concurrency=complete` (Linux) | **Passed** |
 | Xcode project file parses (Python `pbxproj`), all referenced sources exist, scheme XML is valid, app Swift files pass `swiftc -parse` (syntax only) | **Passed** |
-| `swift test` on macOS, which exercises the Accelerate `vDSP` FFT backend, including a test that cross-checks its scaling against Goertzel | Not run locally (no Mac was available). Configured in `.github/workflows/ios-poc.yml`. |
-| `xcodebuild` for iOS Simulator and device, unsigned | Not run locally (no Mac was available). Configured in the same workflow. |
+| `swift test` on macOS (GitHub Actions `macos-15`, Xcode 16.4), using the Accelerate `vDSP` FFT backend: all 30 tests, including a test that cross-checks vDSP power against Goertzel. That test caught and fixed a Hann window scaling bug. | **Passed** in CI |
+| `xcodebuild` unsigned build for the iOS Simulator and for `generic/platform=iOS` (same CI job), with no Swift compiler warnings | **Passed** in CI |
 | Install on physical iPhones, microphone permission flow, and acoustic phone-to-phone round trip | **Not verified.** Follow the test procedure above. |
 
 ## Running the unit tests

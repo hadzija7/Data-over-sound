@@ -17,7 +17,7 @@ public protocol SpectrumAnalyzer: AnyObject {
 }
 
 public func hannWindow(size: Int) -> [Float] {
-    // Periodic Hann, matching vDSP_hann_window(..., vDSP_HANN_NORM).
+    // Periodic Hann, 0.5·(1 − cos(2πn/N)); matches vDSP_hann_window(..., vDSP_HANN_DENORM), not _NORM (which scales by 0.8165·2).
     (0..<size).map { Float(0.5 - 0.5 * cos(2 * Double.pi * Double($0) / Double(size))) }
 }
 
@@ -79,7 +79,7 @@ public final class AccelerateSpectrumAnalyzer: SpectrumAnalyzer {
         }
         self.setup = setup
         var window = [Float](repeating: 0, count: size)
-        vDSP_hann_window(&window, vDSP_Length(size), Int32(vDSP_HANN_NORM))
+        vDSP_hann_window(&window, vDSP_Length(size), Int32(vDSP_HANN_DENORM))
         self.window = window
         self.windowed = [Float](repeating: 0, count: size)
         self.real = [Float](repeating: 0, count: size / 2)
